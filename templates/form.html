@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Skriv i gästboken</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Skriv ett inlägg</h1>
+    <form method="POST">
+        <label for="name">Namn:</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="email">E-post:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="message">Meddelande:</label>
+        <textarea name="message" id="message" required></textarea>
+
+        <button type="submit">Skicka</button>
+    </form>
+    <a href="{{ url_for('index') }}">Tillbaka</a>
+</body>
+</html>
