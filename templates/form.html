@@ -2,20 +2,15 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Skriv i gästboken</title>
+    <title>Skriv i forum</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Skriv ett inlägg</h1>
     <form method="POST">
-        <label>Username:</label>
-        <input type="text" name="name">
-
-        <label>E-post:</label>
-        <input type="email" name="email">
-
         <label>Meddelande:</label>
         <textarea name="message" required></textarea>
+
 
         <button type="submit">Skicka</button>
     </form>

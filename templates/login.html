@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Logga in</title>
+</head>
+<body>
+    <h1>Logga in</h1>
+    <form method="POST">
+        <label>Användarnamn:</label>
+        <input type="text" name="username" required>
+
+
+        <label>Lösenord:</label>
+        <input type="password" name="password" required>
+
+
+        <button type="submit">Logga in</button>
+    </form>
+
+
+    <a href="{{ url_for('register') }}">Skapa konto</a>
+</body>
+</html>

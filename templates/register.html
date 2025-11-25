@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrera</title>
+</head>
+<body>
+    <h1>Skapa konto</h1>
+    <form method="POST">
+        <label>Användarnamn:</label>
+        <input type="text" name="username" required>
+
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+
+        <label>Lösenord:</label>
+        <input type="password" name="password" required>
+
+
+        <button type="submit">Registrera</button>
+    </form>
+
+
+    <a href="{{ url_for('login') }}">Logga in</a>
+</body>
+</html>
