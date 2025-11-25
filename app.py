@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey" # Change to a secure value
+app.secret_key = "supersecretkey"
 
 
 # ----- MySQL-anslutning -----
@@ -54,11 +54,16 @@ def new_entry():
 
         db = get_connection()
         cursor = db.cursor()
+        sql = "INSERT INTO forum (name, email, message) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (name, email, message))
+        db.commit()
+        cursor.close()
+        db.close()
 
 
-        return redirect(url_for("login"))
+        return redirect(url_for("index"))
 
-    return render_template("register.html")
+    return render_template("form.html")
 
 
 # ----- Login -----
