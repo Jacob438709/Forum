@@ -6,19 +6,17 @@
 </head>
 <body>
     <h1>Logga in</h1>
+
     <form method="POST">
         <label>Användarnamn:</label>
-        <input type="text" name="username" required>
-
+        <input type="text" name="username" required><br>
 
         <label>Lösenord:</label>
-        <input type="password" name="password" required>
-
+        <input type="password" name="password" required><br>
 
         <button type="submit">Logga in</button>
     </form>
 
-
-    <a href="{{ url_for('register') }}">Skapa konto</a>
+    <p>Har du inget konto? <a href="{{ url_for('register') }}">Skapa konto</a></p>
 </body>
 </html>

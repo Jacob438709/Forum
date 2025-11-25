@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ thread.title }}</title>
+</head>
+<body>
+<h1>{{ thread.title }}</h1>
+<p>Skapad av {{ thread.creator }} | <a href="{{ url_for('index') }}">Tillbaka</a></p>
+
+<h2>Inlägg</h2>
+{% for post in posts %}
+    <div>
+        <p><strong>{{ post.name }}</strong> <small>{{ post.time }}</small></p>
+        <p>{{ post.message }}</p>
+        {% if post.email %}<p><a href="mailto:{{ post.email }}">{{ post.email }}</a></p>{% endif %}
+    </div>
+{% endfor %}
+
+<h2>Skriv ett nytt inlägg</h2>
+<form method="POST" action="{{ url_for('new_post', thread_id=thread.id) }}">
+    <textarea name="message" required></textarea><br>
+    <button type="submit">Skicka</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ny tråd</title>
+</head>
+<body>
+    <h1>Skapa ny tråd</h1>
+    <form method="POST">
+        <label>Titel:</label>
+        <input type="text" name="title" required>
+        <button type="submit">Skapa tråd</button>
+    </form>
+    <a href="{{ url_for('index') }}">Tillbaka</a>
+</body>
+</html>

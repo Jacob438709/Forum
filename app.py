@@ -23,47 +23,85 @@ def index():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-
     db = get_connection()
     cursor = db.cursor(dictionary=True)
 
-
-    cursor.execute("SELECT * FROM forum ORDER BY time DESC")
-    entries = cursor.fetchall()
-
+    cursor.execute("SELECT t.id, t.title, u.username AS creator "
+                   "FROM threads t JOIN users u ON t.created_by = u.id "
+                   "ORDER BY t.created_at DESC")
+    threads = cursor.fetchall()
 
     cursor.close()
     db.close()
 
+    return render_template("threads.html", threads=threads)
 
-    return render_template("index.html", entries=entries, username=session.get("username"))
+# ----- Se trådar -----
+@app.route("/threads")
+def threads_redirect():
+    return redirect(url_for("index"))
 
-
-# ----- Nytt inlägg -----
-@app.route("/new", methods=["GET", "POST"])
-def new_entry():
+# ----- Skapa ny tråd -----
+@app.route("/threads/new", methods=["GET", "POST"])
+def new_thread():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-
     if request.method == "POST":
-        name = session.get("username")
-        email = session.get("email")
-        message = request.form.get("message", "")
-
+        title = request.form["title"]
+        user_id = session["user_id"]
 
         db = get_connection()
         cursor = db.cursor()
-        sql = "INSERT INTO forum (name, email, message) VALUES (%s, %s, %s)"
-        cursor.execute(sql, (name, email, message))
+        cursor.execute("INSERT INTO threads (title, created_by) VALUES (%s, %s)", (title, user_id))
         db.commit()
+        thread_id = cursor.lastrowid
         cursor.close()
         db.close()
 
+        return redirect(url_for("view_thread", thread_id=thread_id))
 
-        return redirect(url_for("index"))
+    return render_template("new_thread.html")
+# ----- Visa allt i tråd -----
+@app.route("/threads/<int:thread_id>", methods=["GET", "POST"])
+def view_thread(thread_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
 
-    return render_template("form.html")
+    db = get_connection()
+    cursor = db.cursor(dictionary=True)
+
+    # Hämta trådens info
+    cursor.execute("SELECT t.id, t.title, u.username AS creator FROM threads t JOIN users u ON t.created_by = u.id WHERE t.id=%s", (thread_id,))
+    thread = cursor.fetchone()
+
+    # Hämta inlägg
+    cursor.execute("SELECT f.id, f.name, f.email, f.message, f.time FROM forum f WHERE f.thread_id=%s ORDER BY f.time ASC", (thread_id,))
+    posts = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    return render_template("thread.html", thread=thread, posts=posts)
+
+# ----- Nytt inlägg i tråd -----
+@app.route("/threads/<int:thread_id>/new", methods=["POST"])
+def new_post(thread_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    message = request.form["message"]
+    name = session["username"]
+    email = session["email"]
+
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO forum (name, email, message, thread_id) VALUES (%s, %s, %s, %s)", (name, email, message, thread_id))
+    db.commit()
+    cursor.close()
+    db.close()
+
+    return redirect(url_for("view_thread", thread_id=thread_id))
 
 
 # ----- Login -----
