@@ -2,17 +2,17 @@ body {
     font-family: Arial, sans-serif;
     width: 600px;
     margin: 40px auto;
-    background-color: #f9f9f9;
+    background-color: #f8f8f8;
     padding: 20px;
     border-radius: 12px;
 }
 
 .entry {
-    background: #fff;
+    background: white;
     border: 1px solid #ccc;
     margin-bottom: 15px;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 label {
@@ -23,9 +23,4 @@ label {
 textarea {
     width: 100%;
     height: 100px;
-}
-
-button {
-    margin-top: 10px;
-    padding: 6px 12px;
 }

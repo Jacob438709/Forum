@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="sv">
-<head>
-    <meta charset="UTF-8">
-    <title>Gästbok</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Gästbok</h1>
-    <a href="{{ url_for('new_entry') }}">Skriv ett nytt inlägg</a>
+    <head>
+        <meta charset="UTF-8">
+        <title>Gästbok</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <h1>Gästbok</h1>
+        <a href="{{ url_for('new_entry') }}">Skriv ett nytt inlägg</a>
 
-    {% if entries %}
-        {% for entry in entries %}
-            <div class="entry">
-                <p><strong>{{ entry.name }}</strong> <small>{{ entry.time }}</small></p>
-                <p>{{ entry.message }}</p>
-                {% if entry.email %}
-                    <p><a href="mailto:{{ entry.email }}">{{ entry.email }}</a></p>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Inga inlägg ännu.</p>
-    {% endif %}
-</body>
+        {% if entries %}
+            {% for entry in entries %}
+                <div class="entry">
+                    <p><strong>{{ entry.name }}</strong> <small>{{ entry.time }}</small></p>
+                    <p>{{ entry.message }}</p>
+                    {% if entry.email %}
+                        <p><a href="mailto:{{ entry.email }}">{{ entry.email }}</a></p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Inga inlägg ännu.</p>
+        {% endif %}
+    </body>
 </html>

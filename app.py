@@ -1,48 +1,52 @@
 from flask import Flask, render_template, request, redirect, url_for
-import json
-from datetime import datetime
-import os
+import mysql.connector
 
 app = Flask(__name__)
 
-DATA_FILE = "guestbook.json"
+# ----- MySQL-anslutning -----
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",       # standard i XAMPP
+        password="",       # lämna tomt om du inte satt ett lösenord
+        database="guestbook_db"
+    )
 
-
-def read_entries():
-    if not os.path.exists(DATA_FILE):
-        return []
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_entries(entries):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(entries, f, ensure_ascii=False, indent=2)
-
-
+# ----- Visa inlägg -----
 @app.route("/")
 def index():
-    entries = read_entries()
-    # Senaste inläggen först
-    entries.reverse()
+    db = get_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM guestbook ORDER BY time DESC")
+    entries = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
     return render_template("index.html", entries=entries)
 
-
+# ----- Nytt inlägg -----
 @app.route("/new", methods=["GET", "POST"])
 def new_entry():
     if request.method == "POST":
-        entries = read_entries()
-        new_post = {
-            "name": request.form.get("name", "Anonym"),
-            "email": request.form.get("email", ""),
-            "message": request.form.get("message", ""),
-            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-        entries.append(new_post)
-        save_entries(entries)
-        return redirect(url_for("index"))
-    return render_template("form.html")
+        name = request.form.get("name", "Anonym")
+        email = request.form.get("email", "")
+        message = request.form.get("message", "")
 
+        db = get_connection()
+        cursor = db.cursor()
+
+        sql = "INSERT INTO guestbook (name, email, message) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (name, email, message))
+
+        db.commit()
+        cursor.close()
+        db.close()
+
+        return redirect(url_for("index"))
+
+    return render_template("form.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
