@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
+from mysql.connector.errors import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -153,17 +154,23 @@ def register():
 
         db = get_connection()
         cursor = db.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+                (username, email, hashed_pw)
+            )
 
-        cursor.execute(
-            "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
-            (username, email, hashed_pw)
-        )
+            db.commit()
+            cursor.close()
+            db.close()
 
-        db.commit()
-        cursor.close()
-        db.close()
-
-        return redirect(url_for("login"))
+            return redirect(url_for("login"))
+        
+        # ----- Felhantering ifall man försöker göra ett nytt konto med ett upptaget användarnamn -----
+        except IntegrityError:
+            cursor.close()
+            db.close()
+            return render_template("register.html", error="Användarnamnet är redan taget. Försök att logga in istället!")
 
     return render_template("register.html")
 

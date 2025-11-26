@@ -8,6 +8,11 @@
     <h1>Skapa konto</h1>
 
     <form method="POST">
+        {% if error %}
+            <div>
+                {{ error }}
+            </div>
+        {% endif %}
         <label>Användarnamn:</label>
         <input type="text" name="username" required><br>
 
